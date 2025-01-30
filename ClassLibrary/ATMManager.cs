@@ -43,23 +43,29 @@ public class ATMManager
         return atm.Authenticate(currentAccount, pin);
     }
 
-    public string GreetUser() => atm.GreetUser(currentAccount);
+    public string GreetUser() =>
+        currentAccount != null ? atm.GreetUser(currentAccount) : throw new InvalidOperationException("Користувач не автентифікований.");
 
-    public decimal GetAvailableCash() => atm.GetAvailableCash();
+    public decimal CheckBalance() =>
+        currentAccount != null ? atm.CheckBalance(currentAccount) : throw new InvalidOperationException("Користувач не автентифікований.");
 
-    public decimal CheckBalance() => atm.CheckBalance(currentAccount);
+    public bool Withdraw(decimal amount) =>
+        currentAccount != null ? atm.Withdraw(currentAccount, amount) : throw new InvalidOperationException("Користувач не автентифікований.");
 
-    public bool Withdraw(decimal amount) => atm.Withdraw(currentAccount, amount);
-
-    public bool Deposit(decimal amount) => atm.Deposit(currentAccount, amount);
+    public bool Deposit(decimal amount) =>
+        currentAccount != null ? atm.Deposit(currentAccount, amount) : throw new InvalidOperationException("Користувач не автентифікований.");
 
     public bool Transfer(string toCardNumber, decimal amount)
     {
+        if (currentAccount == null)
+            throw new InvalidOperationException("Користувач не автентифікований.");
+
         var toAccount = bank.GetAccount(toCardNumber);
         if (toAccount == null) return false;
 
         return atm.Transfer(currentAccount, toAccount, amount);
     }
+
 
     private void HandleATMEvent(string message, bool sendEmail)
     {

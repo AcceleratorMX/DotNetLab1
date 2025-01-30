@@ -169,13 +169,29 @@ static void PerformWithdrawal(ATMManager atmManager)
 {
     atmManager.GetAvailableCash();
     decimal? amount = GetAmountFromUser("Enter amount to withdraw: ");
-    atmManager.Withdraw(amount!.Value);
+
+    if (amount.HasValue)
+    {
+        atmManager.Withdraw(amount.Value);
+    }
+    else
+    {
+        Console.WriteLine("⚠ Invalid withdrawal amount. Transaction cancelled.");
+    }
 }
 
 static void PerformDeposit(ATMManager atmManager)
 {
     decimal? amount = GetAmountFromUser("Enter amount to deposit: ");
-    atmManager.Deposit(amount!.Value);
+
+    if (amount.HasValue)
+    {
+        atmManager.Deposit(amount.Value);
+    }
+    else
+    {
+        Console.WriteLine("⚠ Invalid deposit amount. Transaction cancelled.");
+    }
 }
 
 static void PerformTransfer(ATMManager atmManager)
@@ -184,19 +200,46 @@ static void PerformTransfer(ATMManager atmManager)
     string toCardNumber = Console.ReadLine()!;
 
     decimal? amount = GetAmountFromUser("Enter amount to transfer: ");
-    atmManager.Transfer(toCardNumber, amount!.Value);
+
+    if (amount.HasValue)
+    {
+        atmManager.Transfer(toCardNumber, amount.Value);
+    }
+    else
+    {
+        Console.WriteLine("⚠ Invalid transfer amount. Transaction cancelled.");
+    }
 }
 
 static decimal? GetAmountFromUser(string prompt)
 {
     Console.Write(prompt);
-    if (decimal.TryParse(Console.ReadLine(), out decimal amount))
+    string input = Console.ReadLine()!;
+
+    if (decimal.TryParse(input, out decimal amount) && amount > 0)
     {
         return amount;
     }
     else
     {
-        Console.WriteLine("Invalid amount entered!");
+        Console.WriteLine("⚠ Error: Invalid amount entered! Please enter a valid positive number.");
+        return null;
+    }
+}
+
+
+static decimal? GetUserInputAmount(string prompt) // Нове ім'я функції
+{
+    Console.Write(prompt);
+    string input = Console.ReadLine()!;
+
+    if (decimal.TryParse(input, out decimal amount) && amount > 0)
+    {
+        return amount;
+    }
+    else
+    {
+        Console.WriteLine("⚠ Error: Invalid amount entered! Please enter a valid positive number.");
         return null;
     }
 }

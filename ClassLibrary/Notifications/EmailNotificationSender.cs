@@ -17,9 +17,17 @@ public class EmailNotificationSender(EmailSettingsProvider emailSettingsProvider
 
         string recipientEmail = notification.GetRecipientEmail();
 
-        if (string.IsNullOrWhiteSpace(recipientEmail))
+        if (string.IsNullOrWhiteSpace(recipientEmail) || !IsValidEmail(recipientEmail))
         {
-            Console.WriteLine("Notification skipped: recipient email is empty");
+            Console.WriteLine("Помилка: Некоректний email отримувача або він порожній.");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_emailSettings.SenderEmail) ||
+            string.IsNullOrWhiteSpace(_emailSettings.SMTPServer) ||
+            _emailSettings.SMTPPort <= 0)
+        {
+            Console.WriteLine("Помилка: Некоректні налаштування SMTP.");
             return;
         }
 
@@ -45,19 +53,25 @@ public class EmailNotificationSender(EmailSettingsProvider emailSettingsProvider
             };
 
             client.Send(message);
-            Console.WriteLine($"Email sent to {recipientEmail}");
-        }
-        catch (FormatException ex)
-        {
-            Console.WriteLine($"Invalid email format: {ex.Message}");
+            Console.WriteLine($"Email надіслано до {recipientEmail}");
         }
         catch (SmtpException ex)
         {
-            Console.WriteLine($"SMTP error: {ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Failed to send email: {ex.Message}");
+            Console.WriteLine($"SMTP помилка: {ex.Message}");
         }
     }
+
+    private static bool IsValidEmail(string email)
+    {
+        try
+        {
+            var addr = new MailAddress(email);
+            return addr.Address == email;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
 }

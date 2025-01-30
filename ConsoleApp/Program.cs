@@ -12,9 +12,13 @@ var configuration = new ConfigurationBuilder()
 var emailSettingsProvider = new EmailSettingsProvider(configuration);
 var emailNotificationSender = new EmailNotificationSender(emailSettingsProvider);
 var displayNotificationSender = new DisplayNotificationSender();
+
+// Використовуємо MultiNotificationSender для всіх операцій
 var multiNotificationSender = new MultiNotificationSender(displayNotificationSender, emailNotificationSender);
 
 var bank = new Bank("StereoBank");
+
+// Передаємо multiNotificationSender замість будь-якого окремого sender'а
 InitializeBank(bank, multiNotificationSender);
 
 static void InitializeBank(Bank bank, INotificationSender notificationSender)
@@ -31,6 +35,13 @@ static void InitializeATMs(Bank bank)
 
 static void InitializeAccounts(Bank bank, INotificationSender notificationSender)
 {
+    //Перевіряємо, чи переданий MultiNotificationSender
+    if (notificationSender is not MultiNotificationSender)
+    {
+        Console.WriteLine("⚠ Warning: Not using MultiNotificationSender! Some notifications may be lost.");
+    }
+
+    // Використовуємо multiNotificationSender для сповіщень
     bank.AddAccount(new Account("John Doe", "mail@gmail.com", "1234", "1234", 1000), notificationSender);
     bank.AddAccount(new Account("Jane Smith", "mail@gmail.com", "4321", "4321", 2000), notificationSender);
     bank.AddAccount(new Account("Bob Johnson", "mail@gmail.com", "1111", "1111", 1500), notificationSender);

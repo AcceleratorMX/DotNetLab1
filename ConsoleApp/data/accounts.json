@@ -1,0 +1,23 @@
+[
+  {
+    "FullName": "John Doe",
+    "Email": "johnmail@gmail.com",
+    "CardNumber": "1234",
+    "Pin": "1234",
+    "Balance": 1000
+  },
+  {
+    "FullName": "Jane Smith",
+    "Email": "janemail@gmail.com",
+    "CardNumber": "4321",
+    "Pin": "4321",
+    "Balance": 2000
+  },
+  {
+    "FullName": "Bob Johnson",
+    "Email": "bobmail@gmail.com",
+    "CardNumber": "1111",
+    "Pin": "1111",
+    "Balance": 1500
+  }
+]

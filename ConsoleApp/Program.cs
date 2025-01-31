@@ -4,6 +4,11 @@ using ClassLibrary.Notifications;
 using ClassLibrary.Notifications.Abstract;
 using ClassLibrary.Settings.Email;
 using Microsoft.Extensions.Configuration;
+using ConsoleApp.Services.BankService;
+
+string atmFilePath = Path.Combine("data", "atms.json");
+string accountFilePath = Path.Combine("data", "accounts.json");
+string bankName = "StereoBank";
 
 var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -14,27 +19,9 @@ var emailNotificationSender = new EmailNotificationSender(emailSettingsProvider)
 var displayNotificationSender = new DisplayNotificationSender();
 var multiNotificationSender = new MultiNotificationSender(displayNotificationSender, emailNotificationSender);
 
-var bank = new Bank("StereoBank");
-InitializeBank(bank, multiNotificationSender);
-
-static void InitializeBank(Bank bank, INotificationSender notificationSender)
-{
-    InitializeATMs(bank);
-    InitializeAccounts(bank, notificationSender);
-}
-
-static void InitializeATMs(Bank bank)
-{
-    bank.AddATM(new AutomatedTellerMachine("ATM001", "Main Street", 500));
-    bank.AddATM(new AutomatedTellerMachine("ATM002", "Park Avenue", 150000));
-}
-
-static void InitializeAccounts(Bank bank, INotificationSender notificationSender)
-{
-    bank.AddAccount(new Account("John Doe", "mail@gmail.com", "1234", "1234", 1000), notificationSender);
-    bank.AddAccount(new Account("Jane Smith", "mail@gmail.com", "4321", "4321", 2000), notificationSender);
-    bank.AddAccount(new Account("Bob Johnson", "mail@gmail.com", "1111", "1111", 1500), notificationSender);
-}
+var bank = new Bank(bankName);
+var bankService = new BankService(atmFilePath, accountFilePath, multiNotificationSender);
+bankService.InitializeBank(bank);
 
 while (true)
 {

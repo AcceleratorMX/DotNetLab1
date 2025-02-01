@@ -5,7 +5,7 @@ namespace ClassLibrary.Entities;
 public class Bank(string name)
 {
     public string Name { get; } = name;
-    private List<AutomatedTellerMachine> ATMs { get; } = [];
+    public List<AutomatedTellerMachine> ATMs { get; } = [];
     private Dictionary<string, Account> Accounts { get; } = [];
 
     public void AddATM(AutomatedTellerMachine atm)

@@ -109,35 +109,47 @@ static void RunATMMenu(ATMManager atmManager)
     {
         Console.Clear();
         atmManager.GreetUser();
-        Console.WriteLine("\n1. Check Balance");
-        Console.WriteLine("2. Withdraw");
-        Console.WriteLine("3. Deposit");
-        Console.WriteLine("4. Transfer");
-        Console.WriteLine("5. Logout");
-        Console.Write("Choose an option: ");
+        ShowATMMenu();
 
-        switch (Console.ReadLine())
-        {
-            case "1":
-                atmManager.CheckBalance();
-                break;
-            case "2":
-                PerformWithdrawal(atmManager);
-                break;
-            case "3":
-                PerformDeposit(atmManager);
-                break;
-            case "4":
-                PerformTransfer(atmManager);
-                break;
-            case "5":
-                return;
-            default:
-                Console.WriteLine("Invalid option!");
-                break;
-        }
+        string choice = Console.ReadLine()!;
+        if (choice == "5") return;
+
+        HandleATMAction(choice, atmManager);
+
         Console.WriteLine("Press any key to continue...");
         Console.ReadKey();
+    }
+}
+
+static void ShowATMMenu()
+{
+    Console.WriteLine("\n1. Check Balance");
+    Console.WriteLine("2. Withdraw");
+    Console.WriteLine("3. Deposit");
+    Console.WriteLine("4. Transfer");
+    Console.WriteLine("5. Logout");
+    Console.Write("Choose an option: ");
+}
+
+static void HandleATMAction(string choice, ATMManager atmManager)
+{
+    switch (choice)
+    {
+        case "1":
+            atmManager.CheckBalance();
+            break;
+        case "2":
+            PerformWithdrawal(atmManager);
+            break;
+        case "3":
+            PerformDeposit(atmManager);
+            break;
+        case "4":
+            PerformTransfer(atmManager);
+            break;
+        default:
+            Console.WriteLine("Invalid option!");
+            break;
     }
 }
 
@@ -145,13 +157,19 @@ static void PerformWithdrawal(ATMManager atmManager)
 {
     atmManager.GetAvailableCash();
     decimal? amount = GetAmountFromUser("Enter amount to withdraw: ");
-    atmManager.Withdraw(amount!.Value);
+    if (amount.HasValue)
+    {
+        atmManager.Withdraw(amount.Value);
+    }
 }
 
 static void PerformDeposit(ATMManager atmManager)
 {
     decimal? amount = GetAmountFromUser("Enter amount to deposit: ");
-    atmManager.Deposit(amount!.Value);
+    if (amount.HasValue)
+    {
+        atmManager.Deposit(amount.Value);
+    }
 }
 
 static void PerformTransfer(ATMManager atmManager)
@@ -160,7 +178,10 @@ static void PerformTransfer(ATMManager atmManager)
     string toCardNumber = Console.ReadLine()!;
 
     decimal? amount = GetAmountFromUser("Enter amount to transfer: ");
-    atmManager.Transfer(toCardNumber, amount!.Value);
+    if (amount.HasValue)
+    {
+        atmManager.Transfer(toCardNumber, amount.Value);
+    }
 }
 
 static decimal? GetAmountFromUser(string prompt)

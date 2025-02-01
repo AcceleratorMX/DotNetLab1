@@ -2,11 +2,11 @@
   {
     "Id": "ATM001",
     "Location": "Main Street",
-    "Balance": 500
+    "AvailableCash": 500
   },
   {
     "Id": "ATM002",
     "Location": "Park Avenue",
-    "Balance": 150000
+    "AvailableCash": 150000
   }
 ]

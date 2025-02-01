@@ -27,8 +27,8 @@ while (true)
 {
     Console.Clear();
     Console.WriteLine($"Welcome to {bank.Name} ATM System!");
-    Console.WriteLine("1. Select ATM");
-    Console.WriteLine("2. Exit");
+    Console.WriteLine($"{MenuOption.SelectATM}. Select ATM");
+    Console.WriteLine($"{MenuOption.Exit}. Exit");
     Console.Write("Choose an option: ");
 
     switch (Console.ReadLine())
@@ -52,18 +52,18 @@ static void SelectATM(Bank bank, INotificationSender notificationSender)
     {
         Console.Clear();
         Console.WriteLine("Select an ATM:");
-        Console.WriteLine("1. ATM001 - Main Street");
-        Console.WriteLine("2. ATM002 - Park Avenue");
-        Console.WriteLine("3. Back to main menu");
+        Console.WriteLine($"{ATMIdentifiers.ATM001} - Main Street");
+        Console.WriteLine($"{ATMIdentifiers.ATM002} - Park Avenue");
+        Console.WriteLine($"{MenuOption.BackToMainMenu}. Back to main menu");
         Console.Write("Choose an option: ");
 
         switch (Console.ReadLine())
         {
             case "1":
-                RunATM(bank.CreateATMManager("ATM001", notificationSender));
+                RunATM(bank.CreateATMManager(ATMIdentifiers.ATM001, notificationSender));
                 break;
             case "2":
-                RunATM(bank.CreateATMManager("ATM002", notificationSender));
+                RunATM(bank.CreateATMManager(ATMIdentifiers.ATM002, notificationSender));
                 break;
             case "3":
                 return;
@@ -112,7 +112,7 @@ static void RunATMMenu(ATMManager atmManager)
         ShowATMMenu();
 
         string choice = Console.ReadLine()!;
-        if (choice == "5") return;
+        if (choice == MenuOption.Logout.ToString()) return;
 
         HandleATMAction(choice, atmManager);
 
@@ -123,11 +123,11 @@ static void RunATMMenu(ATMManager atmManager)
 
 static void ShowATMMenu()
 {
-    Console.WriteLine("\n1. Check Balance");
-    Console.WriteLine("2. Withdraw");
-    Console.WriteLine("3. Deposit");
-    Console.WriteLine("4. Transfer");
-    Console.WriteLine("5. Logout");
+    Console.WriteLine($"\n{ATMMenuOption.CheckBalance}. Check Balance");
+    Console.WriteLine($"{ATMMenuOption.Withdraw}. Withdraw");
+    Console.WriteLine($"{ATMMenuOption.Deposit}. Deposit");
+    Console.WriteLine($"{ATMMenuOption.Transfer}. Transfer");
+    Console.WriteLine($"{ATMMenuOption.Logout}. Logout");
     Console.Write("Choose an option: ");
 }
 
@@ -139,10 +139,10 @@ static void HandleATMAction(string choice, ATMManager atmManager)
             atmManager.CheckBalance();
             break;
         case "2":
-            PerformTransaction(atmManager, "withdraw");
+            PerformTransaction(atmManager, TransactionType.Withdraw);
             break;
         case "3":
-            PerformTransaction(atmManager, "deposit");
+            PerformTransaction(atmManager, TransactionType.Deposit);
             break;
         case "4":
             PerformTransfer(atmManager);
@@ -153,17 +153,17 @@ static void HandleATMAction(string choice, ATMManager atmManager)
     }
 }
 
-static void PerformTransaction(ATMManager atmManager, string transactionType)
+static void PerformTransaction(ATMManager atmManager, TransactionType transactionType)
 {
-    decimal? amount = GetAmountFromUser($"Enter amount to {transactionType}: ");
+    decimal? amount = GetAmountFromUser($"Enter amount to {transactionType.ToString().ToLower()}: ");
     if (amount.HasValue)
     {
-        switch (transactionType.ToLower())
+        switch (transactionType)
         {
-            case "withdraw":
+            case TransactionType.Withdraw:
                 atmManager.Withdraw(amount.Value);
                 break;
-            case "deposit":
+            case TransactionType.Deposit:
                 atmManager.Deposit(amount.Value);
                 break;
         }
@@ -199,4 +199,34 @@ static decimal? GetAmountFromUser(string prompt)
 static void DisplayNotifications(string message)
 {
     Console.WriteLine(message);
+}
+
+public static class MenuOption
+{
+    public const int SelectATM = 1;
+    public const int Exit = 2;
+    public const int BackToMainMenu = 3;
+    public const int Logout = 5;
+}
+
+public static class ATMIdentifiers
+{
+    public const string ATM001 = "ATM001";
+    public const string ATM002 = "ATM002";
+}
+
+public enum ATMMenuOption
+{
+    CheckBalance = 1,
+    Withdraw = 2,
+    Deposit = 3,
+    Transfer = 4,
+    Logout = 5
+}
+
+public enum TransactionType
+{
+    Withdraw,
+    Deposit,
+    Transfer
 }

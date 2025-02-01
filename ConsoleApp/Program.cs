@@ -1,10 +1,11 @@
-﻿using ClassLibrary;
+using ClassLibrary;
 using ClassLibrary.Entities;
 using ClassLibrary.Notifications;
 using ClassLibrary.Notifications.Abstract;
 using ClassLibrary.Settings.Email;
 using Microsoft.Extensions.Configuration;
 using ConsoleApp.Services.BankService;
+using ConsoleApp.Services.MenuService;
 
 string atmFilePath = Path.Combine("data", "atms.json");
 string accountFilePath = Path.Combine("data", "accounts.json");
@@ -202,3 +203,6 @@ static void DisplayNotifications(string message)
 {
     Console.WriteLine(message);
 }
+
+MenuService.RunMainMenu(bank, multiNotificationSender);
+ main

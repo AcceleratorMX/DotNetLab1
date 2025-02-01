@@ -139,10 +139,10 @@ static void HandleATMAction(string choice, ATMManager atmManager)
             atmManager.CheckBalance();
             break;
         case "2":
-            PerformWithdrawal(atmManager);
+            PerformTransaction(atmManager, "withdraw");
             break;
         case "3":
-            PerformDeposit(atmManager);
+            PerformTransaction(atmManager, "deposit");
             break;
         case "4":
             PerformTransfer(atmManager);
@@ -153,22 +153,20 @@ static void HandleATMAction(string choice, ATMManager atmManager)
     }
 }
 
-static void PerformWithdrawal(ATMManager atmManager)
+static void PerformTransaction(ATMManager atmManager, string transactionType)
 {
-    atmManager.GetAvailableCash();
-    decimal? amount = GetAmountFromUser("Enter amount to withdraw: ");
+    decimal? amount = GetAmountFromUser($"Enter amount to {transactionType}: ");
     if (amount.HasValue)
     {
-        atmManager.Withdraw(amount.Value);
-    }
-}
-
-static void PerformDeposit(ATMManager atmManager)
-{
-    decimal? amount = GetAmountFromUser("Enter amount to deposit: ");
-    if (amount.HasValue)
-    {
-        atmManager.Deposit(amount.Value);
+        switch (transactionType.ToLower())
+        {
+            case "withdraw":
+                atmManager.Withdraw(amount.Value);
+                break;
+            case "deposit":
+                atmManager.Deposit(amount.Value);
+                break;
+        }
     }
 }
 
